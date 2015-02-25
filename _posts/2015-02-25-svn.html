@@ -1,0 +1,126 @@
+---
+layout: post
+title: SVN相关配置
+category: web
+keywords: svn,svn配置
+---
+
+<p>虽然目前都比较推荐git进行代码管理，但是目前的项目大家还是基于svn进行操作。能尽快的产出就svn先行了。以下是配置方式：</p>
+
+<pre>
+apt-get install subversion  
+mkdir /home/svn  
+cd /home/svn  
+mkdir myproject  
+</pre>
+
+
+<p>下面的命令用于创建 SVN 文件仓库：</p>
+
+<pre>
+svnadmin create /home/svn/myproject
+</pre>
+
+
+<p>当您创建了 SVN 文件仓库，您可以修改 /home/svn/myproject/conf/svnserve.conf 来配置其访问控制。</p>
+
+<p>例如，您可以取消下面的注释符号来设置授权机制：</p>
+
+<pre>
+# [general]
+# password-db = passwd
+</pre>
+
+
+<p>现在，您可以在“passwd”文件中维护用户清单。编辑同一目录下“passwd”文件，添加新用户。语法如下：</p>
+
+<pre>
+anon-access = read
+auth-access = write
+</pre>
+
+
+<p>＃(注意行开始不要有多余空格)<br/>
+将anon-access = read 改为：anon-access = none<br/>
+anoe-access=none  表示匿名登陆下的用户权限为空。即：系统不支持匿名登陆</p>
+
+<p>编辑passwd  如下:</p>
+
+<pre>
+[users]
+andy = andy
+</pre>
+
+
+<p>现在，您可以在本地或者远程通过 svn://访问 SVN 了，您可以使用“svnserve”来运行
+svnserver，语法如下：</p>
+
+<h4>关闭</h4>
+
+<pre>sudo killall svnserve</pre>
+
+
+<h4>重启</h4>
+
+<pre>
+$ sudo svnserve -d --foreground -r /home/svn &
+# -d -- daemon mode
+# --foreground -- run in foreground (useful for debugging)
+# -r -- root of directory to serve
+</pre>
+
+
+<p>要了解更多信息，请输入：</p>
+
+<pre>
+$ svnserve --help
+</pre>
+
+
+<h2>切换账号</h2>
+
+<p>windows环境:<br/>
+1、在项目上右键，选择TortoiseSVN-->settings,<br/>
+2、在弹出的TortoiseSVN Settings页面中选择“Saved Data”选项，<br/>
+3、然后点击“Authentication data”对应的“Clear”按钮，清除一下之前的认证信息就可以了。</p>
+
+<h2>设置commit必须添加注释</h2>
+
+<pre>
+chmod +x /home/svn/xiaopengyou/hook/pre-commit
+vim /home/svn/xiaopengyou/hook/pre-commit
+</pre>
+
+
+<p>代码如下：</p>
+
+<pre>
+REPOS="$1"
+TXN="$2"
+
+# Make sure that the log message contains some text.
+SVNLOOK=/usr/bin/svnlook
+
+LOGMSG=`$SVNLOOK log -t $TXN $REPOS | wc -m`
+
+#$SVNLOOK log -t "$TXN" "$REPOS" | \
+#   grep "[a-zA-Z0-9]" > /dev/null || exit 1
+
+#echo $LOGMSG > /home/svn/xiaopengyou/aaa.txt
+if [ "$LOGMSG" -lt 48 ]
+then
+ echo "\n至少输入4个汉字" >&2
+ exit 1
+fi
+
+# Exit on all errors.
+#set -e
+
+# Check that the author of this commit has the rights to perform
+# the commit on the files and directories being modified.
+#"$REPOS"/hooks/commit-access-control.pl "$REPOS" $TXN \
+#  "$REPOS"/hooks/commit-access-control.cfg
+
+# All checks passed, so allow the commit.
+exit 0
+</pre>

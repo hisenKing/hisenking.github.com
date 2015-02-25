@@ -1,0 +1,37 @@
+{% include header.html  %}
+<div class="neiye_main">
+    <div class="left">
+        <div class="location"><img src="{{ site:url }}/images/arrow2.gif" width="17" height="14" /> <a href="{{ site:url }}">首页</a> > {{ page.title }}</div>
+        <dl class="content">
+            <dt>
+            <h2>{{ page.title }}</h2>  
+            <h3><img src="{{ site:url }}/images/date.gif" width="14" height="16" /> {{ page.date | date:"%Y-%m-%d"  }} &nbsp;
+            <img  src="{{ site:url }}/images/man.gif" width="14" height="14" /> hisenKing  </h3>
+            </dt>
+            <dd>
+                {{ content }}
+            </dd>
+        </dl>
+<!-- Duoshuo Comment BEGIN -->
+	<div class="ds-thread"></div>
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"hisenking"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- Duoshuo Comment END -->
+
+    </div>
+    
+    <div class="right" style="padding-top:20px;">     	
+        {% include side_weiboshow.html  %}
+        {% include side_categorys.html  %}
+     </div>
+</div>
+{% include footer.html  %}
