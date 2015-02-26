@@ -1,7 +1,8 @@
 <div class="select">
     <span> <strong>{{ page.name }}</strong> ({{ site.categories[page.name] | size }}篇文章)</span>
 </div>
-{{ page.name | replace:'.html',''}}
+{{ page.shortname }}
+{{ site.categories[{{page.name | replace:'.html',''}}
 {{ page.path }}
 {{ site.categories }}
 
